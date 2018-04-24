@@ -6,14 +6,16 @@ public class Accept_List_Information {
 
     private String name;
     private String time;
+    private String arrival;
 
     public Accept_List_Information(){
         //this constructor is required
     }
 
-    public Accept_List_Information(String name, String time) {
+    public Accept_List_Information(String name, String time, String arrival) {
         this.name = name;
         this.time = time;
+        this.arrival =arrival;
     }
 
     String getname() {
@@ -24,8 +26,6 @@ public class Accept_List_Information {
         return time;
     }
 
-    public String settime(String time) {
-        return time;
-    }
+    String getarrival(){return arrival;}
 }
 

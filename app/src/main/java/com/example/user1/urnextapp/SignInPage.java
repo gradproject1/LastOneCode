@@ -28,9 +28,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -108,7 +105,7 @@ public class SignInPage extends AppCompatActivity {
                                 String Token_ID= FirebaseInstanceId.getInstance().getToken();
                                 Map<String,Object> token_map= new HashMap<>();
                                 token_map.put("Token_ID", Token_ID);
-                                fire_store.collection("Usres").document(uid).update(token_map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                fire_store.collection("Usres").document(uid).set(token_map).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                                                                         @Override
                                                                                                                         public void onSuccess(Void aVoid) {
 
@@ -142,19 +139,22 @@ public class SignInPage extends AppCompatActivity {
                                                             String dname = dataSnapshot.child("Doctor Name").getValue(String.class);
                                                            String  papp = dataSnapshot.child("appTime").getValue(String.class);
                                                             if (dname != null && papp != null && pname.equals(name)) {
-
+                                                               if(MyBeacon.flag==1){
                                                                 Intent i = new Intent(SignInPage.this, Patient.class);
-                                                                startActivity(i);
+                                                                startActivity(i);}
+                                                               else{
+                                                                    Toast.makeText(SignInPage.this,"You are not in the range" , Toast.LENGTH_LONG).show();
+
+                                                                }
 
 
-                                                            } else
+                                                           }else
                                                             {
                                                                 Toast.makeText(SignInPage.this,"You don't have an appointment" , Toast.LENGTH_LONG).show();
                                                                 startActivity(new Intent(SignInPage.this, WelcomePage.class));
                                                                 finish();
 
                                                             }
-
                                                         }
 
                                                         @Override

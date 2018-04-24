@@ -22,14 +22,18 @@ import com.google.firebase.auth.FirebaseAuth;
 public class forgotPassword extends AppCompatActivity {
 
     private EditText inputEmail;
-    private Button btnReset, btnBack;
+    private Button btnReset;
     private FirebaseAuth auth;
+    private TextView signin;
+    private TextView signup;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
 
         inputEmail = (EditText) findViewById(R.id.editTextresetemail);
+        signin = (TextView)findViewById(R.id.signin);
+        signup = (TextView)findViewById(R.id.signup);
         btnReset = (Button) findViewById(R.id.btn_reset_password);
         auth = FirebaseAuth.getInstance();
 
@@ -68,6 +72,21 @@ public class forgotPassword extends AppCompatActivity {
                                 }
                             }
                         });
+            }
+        });
+        signup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(forgotPassword.this, PSignUpPage.class);
+                startActivity(i);
+            }
+        });
+
+        signin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent ii = new Intent(forgotPassword.this, SignInPage.class);
+                startActivity(ii);
             }
         });
 

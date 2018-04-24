@@ -1,18 +1,20 @@
 package com.example.user1.urnextapp;
 //android
-import android.content.CursorLoader;
+
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.graphics.Color;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
+
 //fire base
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,9 +26,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 //java
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.Date;
+
+import static android.content.Context.NOTIFICATION_SERVICE;
+
 
 public class AcceptPatient extends Fragment {
 
@@ -40,7 +46,6 @@ public class AcceptPatient extends Fragment {
 
     static String User_ID=" ";
     static ListView AcceptList;
-    Button accept_button;
     static ArrayList<Accept_List_Information> PatientList;
     static ArrayList<String> appTime = new ArrayList<>();
     static ArrayList<String> patient_phone = new ArrayList<>();
@@ -48,8 +53,6 @@ public class AcceptPatient extends Fragment {
     static AcceptList adapter;
     static String Doctor_Name;
     static String Nurse_Name;
-    private int count=0;
-
 
     //Constructor default
     public AcceptPatient(){}
@@ -61,7 +64,6 @@ public class AcceptPatient extends Fragment {
         AcceptList = (ListView) PageOne.findViewById(R.id.Acceptlist);
         PatientList = new ArrayList<>();
 
-        accept_button = (Button) PageOne.findViewById(R.id.accept);
 
         FirebaseMessaging.getInstance().subscribeToTopic("pushNotifications");
         FirebaseMessaging.getInstance().unsubscribeFromTopic("pushNotifications");
@@ -97,8 +99,10 @@ public class AcceptPatient extends Fragment {
                                     public void onDataChange(DataSnapshot dataSnapshot) {
 
                                         final String phone_number = dataSnapshot.child("Phone").getValue(String.class);
+                                        final String arrival = dataSnapshot.child("arrival").getValue(String.class);
 
                                         assert phone_number != null;
+                                        assert arrival != null;
                                         external_data.child("Appointment").child("Dental clinic").addValueEventListener(new ValueEventListener() {
                                             //search about patient in appointment data to get his appointment time
                                             @Override
@@ -106,7 +110,7 @@ public class AcceptPatient extends Fragment {
                                                 String name = dataSnapshot.child(phone_number).child("Name").getValue(String.class);
                                                 String app_time = dataSnapshot.child(phone_number).child("appTime").getValue(String.class);
                                                 if (name != null && appTime != null) {
-                                                    Accept_List_Information Patient_information = new Accept_List_Information(name, app_time);
+                                                    Accept_List_Information Patient_information = new Accept_List_Information(name, app_time, arrival);
                                                     if (PatientList.isEmpty() == true) {
                                                         //store user phone number for delete him from appointment table when the nurse accept him
                                                         patient_phone.add(phone_number);
@@ -117,19 +121,12 @@ public class AcceptPatient extends Fragment {
                                                         // store patient information in object of patients
                                                         PatientList.add(Patient_information);
                                                         // create adapter of patient
-
-                                                            /*Collections.sort(PatientList, new Comparator<Accept_List_Information>() {
-                                                                public int compare(Accept_List_Information p1, Accept_List_Information p2) {
-                                                                    return p1.gettime().compareTo(p2.gettime());
-                                                                }
-                                                            });*/
                                                         adapter = new AcceptList(getActivity(), PatientList);
                                                         AcceptList.setAdapter(adapter);
                                                         adapter.notifyDataSetChanged();
                                                     } else {
                                                         int count = 0;
                                                         for (int i = 0; i < PatientList.size(); i++) {
-                                                            assert PatientList.get(i) != null;
                                                             if (PatientList.get(i).gettime().equals(Patient_information.gettime())) {
                                                                 count++;
                                                             }
@@ -144,18 +141,16 @@ public class AcceptPatient extends Fragment {
                                                             // store patient information in object of patients
                                                             PatientList.add(Patient_information);
                                                             // create adapter of patient
-                                                                /*Collections.sort(PatientList, new Comparator<Accept_List_Information>() {
-                                                                    public int compare(Accept_List_Information p1, Accept_List_Information p2) {
-                                                                        return p1.gettime().compareTo(p2.gettime());
-                                                                    }
-                                                                });*/
-                                                            adapter = new AcceptList(getActivity(), PatientList);
-                                                            AcceptList.setAdapter(adapter);
-                                                            adapter.notifyDataSetChanged();
+                                                            if (getActivity()!=null){
+                                                                adapter = new AcceptList(getActivity(), PatientList);
+                                                                AcceptList.setAdapter(adapter);
+                                                                adapter.notifyDataSetChanged();
+                                                            }
                                                         }
                                                     }
                                                 }
-                                                //adapter.notifyDataSetChanged();
+                                                adapter.notifyDataSetChanged();
+
                                             }
 
                                             @Override
@@ -163,25 +158,32 @@ public class AcceptPatient extends Fragment {
                                             }//app
                                         });//app
 
-                                    }//app
+                                    }
 
                                     @Override
                                     public void onCancelled(DatabaseError databaseError) {
                                     }
                                 });
                             }
+
                             @Override
                             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                                adapter.notifyDataSetChanged();
                             }
+
                             @Override
                             public void onChildRemoved(DataSnapshot dataSnapshot) {
                                 adapter.notifyDataSetChanged();
                             }
+
                             @Override
                             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                                adapter.notifyDataSetChanged();
                             }
+
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
+                                adapter.notifyDataSetChanged();
                             }
                         });
                     }
@@ -194,18 +196,6 @@ public class AcceptPatient extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
             }
         }); // end of nurse table search
-
         return PageOne;
     }// end create
-
-  /*  public ArrayList<Accept_List_Information> sort(ArrayList<Accept_List_Information> array){
-        ArrayList<Accept_List_Information> array_sort;
-        ArrayList<Accept_List_Information> temp= array;
-        for(int i=0;i<array.size();i++){
-            Accept_List_Information ob=
-        }
-
-        return array_sort;
-    }
-*/
 }// end class

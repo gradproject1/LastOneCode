@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+<FrameLayout android:gravity="center" android:background="#f1f0f0" tools:context="com.example.user1.urnextapp.Pprofile" android:layout_height="match_parent" android:layout_width="match_parent" xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- TODO: Update blank fragment layout -->
+
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_margin="30dp"
+        android:fontFamily="@font/trebuc"
+        android:text="Doctor name:"
+        android:textColor="#4095c6"
+        android:id="@+id/textView7"/>
+
+    <TextView
+        android:id="@+id/doctorName1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="55dp"
+        android:fontFamily="@font/trebuc"
+        android:text=""
+        android:textColor="#16a0a1" />
+
+
+    <TextView android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:fontFamily="@font/trebuc"
+        android:text="Doctor ID:"
+        android:textColor="#4095c6"
+        android:id="@+id/textView18"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="90dp"/>
+
+    <TextView
+        android:id="@+id/did"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="114dp"
+        android:fontFamily="@font/trebuc"
+        android:text=""
+        android:textColor="#16a0a1" />
+
+</FrameLayout>

@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.*;
+import java.util.HashMap;
+import java.util.Map;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -26,7 +28,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import com.google.firebase.database.ValueEventListener;
-
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
 public class Pprofile extends Fragment {
@@ -38,12 +41,12 @@ public class Pprofile extends Fragment {
     private FirebaseUser user = firebaseAuth.getCurrentUser();
     DatabaseReference Patient = database.getReference("Patient");
     DatabaseReference external = database.getReference("ExternalDB");
-    DatabaseReference walkIn = database.getReference("walk in");
     DatabaseReference waiting = database.getReference("waiting time and queue number");
      String id=" ";
+    private FirebaseFirestore fire_store; //to store token id in his document
+
     //Constructor default
     public Pprofile(){};
-
 
     @Override
     public View onCreateView(  @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) throws NullPointerException {
@@ -55,6 +58,7 @@ public class Pprofile extends Fragment {
         appTime =(TextView) Page1.findViewById(R.id.appTime);
         logout = (Button) Page1.findViewById(R.id.logout);
         cancel =(Button) Page1.findViewById(R.id.cancel);
+        fire_store= FirebaseFirestore.getInstance(); //fire store instance
 
 
         if(user != null)
@@ -63,7 +67,6 @@ public class Pprofile extends Fragment {
 
         }
 
-
         Patient.child(id).addValueEventListener(new ValueEventListener(){
             public void onDataChange(DataSnapshot dataSnapshot) {
               final String  pname= dataSnapshot.child("Name").getValue(String.class);
@@ -71,7 +74,6 @@ public class Pprofile extends Fragment {
                 final String arrival2 = dataSnapshot.child("arrival").getValue(String.class);
                 arrival.setText(arrival2);
               name.setText(pname);
-
 
                 external.child("Appointment").child("Dental clinic").child(pphone).addValueEventListener(new ValueEventListener(){
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -117,9 +119,6 @@ public class Pprofile extends Fragment {
             public void onCancelled(DatabaseError databaseError) {}
         });
 
-
-
-
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -142,11 +141,18 @@ public class Pprofile extends Fragment {
                         })
                         .setNegativeButton("Cancel", null)
                         .show();
+                Map<String,Object> token_remove= new HashMap<>();
+                token_remove.put("Token_ID", FieldValue.delete());
+                //because when field in firebase all become null the key will deleted so we use this method
+                fire_store.collection("Usres").document(id).update(token_remove).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                    }
+                });
             }
 
         });
-
-
         return Page1;
     }
 }

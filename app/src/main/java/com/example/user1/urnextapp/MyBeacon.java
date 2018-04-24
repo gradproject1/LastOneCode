@@ -20,7 +20,7 @@ import java.util.UUID;
  */
 
 public class MyBeacon extends Application {
-
+static int flag=0;
     private BeaconManager beaconManager;
 
     @Override
@@ -36,6 +36,7 @@ public class MyBeacon extends Application {
         beaconManager.setMonitoringListener(new BeaconManager.BeaconMonitoringListener() {
             @Override
             public void onEnteredRegion(BeaconRegion region, List<Beacon> beacons) {
+                flag=1;
                 showNotification(
                         "Enter",
                         "welcome to the clinic!");
@@ -43,6 +44,7 @@ public class MyBeacon extends Application {
             @Override
             public void onExitedRegion(BeaconRegion region) {
                 // could add an "exit" notification too if you want (-:
+                flag=0;
                 showNotification(
                         "Exit",
                         "Goodbey!");

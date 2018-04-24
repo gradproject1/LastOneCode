@@ -1,18 +1,31 @@
 package com.example.user1.urnextapp;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.graphics.Color;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +35,15 @@ public class Doctor extends AppCompatActivity {
 
     TabLayout MyTabs;
     ViewPager MyPage;
+    private static FirebaseDatabase database = FirebaseDatabase.getInstance();
+    static DatabaseReference waiting_table = database.getReference("waiting time and queue number");
+    static DatabaseReference external_data = database.getReference("ExternalDB");
+    static DatabaseReference patient_table = database.getReference("Patient");
+    private FirebaseAuth firebaseAuth= FirebaseAuth.getInstance();
+    private FirebaseUser user = firebaseAuth.getCurrentUser();
+    static String User_ID=" ";
+    long count=0,numberofchild=0;
+    String Doctor_Name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,21 +58,55 @@ public class Doctor extends AppCompatActivity {
         MyTabs.setupWithViewPager(MyPage);
         SetUpViewPager(MyPage);
 
+        if (user != null) {
+            User_ID = user.getUid();
+        }
 
+        external_data.child("Doctors").child(User_ID).addValueEventListener(new ValueEventListener() {
+            // get doctor id from nurse data
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Doctor_Name= dataSnapshot.child("Name").getValue(String.class);
+                        assert Doctor_Name != null;
+                        waiting_table.child(Doctor_Name).addChildEventListener(new ChildEventListener() {
+                            //search by doctor name in waiting table to get patient id
+                            @Override
+                            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                                    showNotification("","New patient arrived");
+                            }
+                            @Override
+                            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                            }
+
+                            @Override
+                            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                            }
+
+                            @Override
+                            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        }); // end of nurse table search
     }
 
     public void SetUpViewPager (ViewPager viewpage){
         Doctor.MyViewPageAdapter Adapter = new Doctor.MyViewPageAdapter(getSupportFragmentManager());
-
-
         Adapter.AddFragmentPage(new patientList(), " patient list Page");
         Adapter.AddFragmentPage(new NDwaiting(), "Waiting Page");
-
-
+        Adapter.AddFragmentPage(new DoctorProfile(), "Profile Page");
         //We Need Fragment class now
-
         viewpage.setAdapter(Adapter);
-
     }
 
     public class MyViewPageAdapter extends FragmentPagerAdapter {
@@ -78,7 +134,7 @@ public class Doctor extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
     }
 
@@ -103,4 +159,34 @@ public class Doctor extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    public void showNotification(String title, String message) {
+// create the notification with sound and light
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, getString(R.string.default_notification_channel_id))
+                .setSmallIcon(R.drawable.logo)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setAutoCancel(true);
+        builder.setLights(Color.BLUE, 500, 500);
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        builder.setSound(alarmSound);
+
+// to open specific page when click on the notification
+        Intent resultIntent = new Intent(this,this.getClass());
+
+        PendingIntent resultPendingIntent =
+                PendingIntent.getActivity(
+                        this,
+                        0,
+                        resultIntent,
+                        PendingIntent.FLAG_CANCEL_CURRENT
+                );
+        builder.setContentIntent(resultPendingIntent);
+
+// to give each notification unique id and notification manager
+        int notification_id = (int) System.currentTimeMillis();
+        NotificationManager manager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        manager.notify(notification_id, builder.build());
+
+    }
+
 }

@@ -7,47 +7,28 @@
     tools:layout_editor_absoluteY="25dp">
 
     <TextView
-        android:id="@+id/pname"
+        android:id="@+id/tixtview13"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:layout_below="@+id/number"
+        android:layout_toEndOf="@+id/imageView4"
+        android:layout_toRightOf="@+id/imageView4"
+        android:fontFamily="@font/trebuc"
+        android:text="Name: "
         android:textColor="@color/colorPrimary"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:typeface="monospace"
         app:layout_constraintEnd_toStartOf="@+id/accept"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginLeft="7dp"
-        android:layout_marginStart="125dp"
-        android:layout_marginTop="25dp"
-        android:fontFamily="@font/trebuc"
-        android:textSize="17sp"
-        android:textStyle="bold"
-        android:typeface="monospace"/>
-
-    <TextView
-        android:id="@+id/time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textColor="@color/colorPrimary"
-        app:layout_constraintStart_toStartOf="@+id/pname"
-        app:layout_constraintTop_toBottomOf="@+id/pname"
-        android:layout_marginLeft="7dp"
-        android:layout_marginStart="125dp"
-        android:layout_marginTop="60dp"
-        android:fontFamily="@font/trebuc"
-        android:textColorLink="@color/colorPrimary"
-        android:textSize="17sp"
-        android:textStyle="bold"
-        android:typeface="monospace" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/accept"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/pname"
-        android:layout_marginEnd="22dp"
-        android:layout_marginRight="22dp"
+        android:layout_below="@+id/imageView4"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="11dp"
         android:background="@drawable/button"
         android:clickable="true"
         android:fontFamily="@font/trebuc"
@@ -72,6 +53,82 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/paitenticon" />
+
+    <TextView
+        android:id="@+id/number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/imageView4"
+        android:layout_alignRight="@+id/imageView4"
+        android:layout_alignTop="@+id/imageView4"
+        android:layout_marginEnd="18dp"
+        android:layout_marginRight="18dp"
+        android:textColor="@android:color/holo_red_dark" />
+
+    <TextView
+        android:id="@+id/apptime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tixtview13"
+        android:layout_toEndOf="@+id/number"
+        android:layout_toRightOf="@+id/number"
+        android:fontFamily="@font/trebuc"
+        android:text="Appointment time: "
+        android:textColor="@color/colorPrimary"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:typeface="monospace" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/apptime"
+        android:layout_toEndOf="@+id/apptime"
+        android:layout_toRightOf="@+id/apptime"
+        android:textColor="@color/cardview_dark_background" />
+
+    <TextView
+        android:id="@+id/arrivaltime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/accept"
+        android:layout_toEndOf="@+id/number"
+        android:layout_toRightOf="@+id/number"
+        android:fontFamily="@font/trebuc"
+        android:text="Arrival time: "
+
+        android:textColor="@color/colorPrimary"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:typeface="monospace" />
+
+    <TextView
+        android:id="@+id/textView12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/arrivaltime"
+        android:layout_alignBottom="@+id/arrivaltime"
+        android:layout_toEndOf="@+id/arrivaltime"
+        android:layout_toRightOf="@+id/arrivaltime"
+        android:textColor="@color/cardview_dark_background" />
+
+    <TextView
+        android:id="@+id/pname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tixtview13"
+        android:layout_toEndOf="@+id/tixtview13"
+        android:layout_toRightOf="@+id/tixtview13" />
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/accept"
+        android:layout_marginTop="13dp"
+        android:layout_toEndOf="@+id/tixtview13"
+        android:layout_toRightOf="@+id/tixtview13" />
 
 
 </RelativeLayout>

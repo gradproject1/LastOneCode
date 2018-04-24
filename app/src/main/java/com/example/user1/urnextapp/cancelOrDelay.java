@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -26,6 +27,7 @@ public class cancelOrDelay extends Fragment {
     public cancelOrDelay(){};
 
     RadioGroup group;
+    TextView delay_text;
     View PageOne;
     String Comment;
     EditText textArea,time;
@@ -40,7 +42,9 @@ public class cancelOrDelay extends Fragment {
 
         PageOne = inflater.inflate(R.layout.fragment_cancel_or_delay, container, false);
 
+
         textArea = (EditText) PageOne.findViewById(R.id.textArea_information);
+        delay_text=(TextView)PageOne.findViewById(R.id.textView4);
         time=  (EditText) PageOne.findViewById(R.id.time);
         group=(RadioGroup)PageOne.findViewById(R.id.groubp);
         submit=(Button) PageOne.findViewById(R.id.button2);
@@ -61,14 +65,16 @@ public class cancelOrDelay extends Fragment {
                 return false;
             }
         });
+        time.setVisibility(View.INVISIBLE);
+        delay_text.setVisibility(View.INVISIBLE);
 
         // radio listener and store the radio name
         Cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Comment="The appointment has been canceled: \n \n";
-                time.setEnabled(false);
-                time.setText("");
+                time.setVisibility(View.INVISIBLE);
+                delay_text.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -76,7 +82,8 @@ public class cancelOrDelay extends Fragment {
             @Override
             public void onClick(View v) {
                 Comment="The appointment has to be delayed: \n \n";
-                time.setEnabled(true);
+                time.setVisibility(View.VISIBLE);
+                delay_text.setVisibility(View.VISIBLE);
             }
         });
 
@@ -117,7 +124,7 @@ public class cancelOrDelay extends Fragment {
                             for (int i = 0; i < AcceptPatient.patient_ID.size(); i++) {
                                 // each user have a document of notification
                                 Map<String, Object> notification_message = new HashMap<>(); //map between user and his collection
-                                notification_message.put("Message", Comment + textArea.getText().toString()+"\n \n Delay period will be: "+ time.getText().toString()); //put the message in patient collection
+                                notification_message.put("Message", Comment + textArea.getText().toString()); //put the message in patient collection
                                 notification_message.put("From", AcceptPatient.User_ID);
                                 fire_store.collection("Usres/" + AcceptPatient.patient_ID.get(i) + "/Notifications").add(notification_message).addOnSuccessListener(new OnSuccessListener() {
                                     @Override

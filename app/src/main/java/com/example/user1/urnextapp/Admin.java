@@ -42,7 +42,7 @@ public class Admin extends AppCompatActivity {
         Admin.MyViewPageAdapter Adapter = new Admin.MyViewPageAdapter(getSupportFragmentManager());
 
 
-        Adapter.AddFragmentPage(new addDN(), "Add Entertainment Page");
+        Adapter.AddFragmentPage(new addDN(), "Upload Entertainment Page");
 
         //We Need Fragment class now
 

@@ -116,12 +116,12 @@ private  Date date = null;
                             }
                         });
                 builder.setPositiveButton("Cancel",
-                        new DialogInterface.OnClickListener() {
+                      new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
 
-                                Toast.makeText(Patient.this ,"You successfully canceled this appointment!", Toast.LENGTH_SHORT).show();
+                              /*  Toast.makeText(Patient.this ,"You successfully canceled this appointment!", Toast.LENGTH_SHORT).show();
                                 Intent h= new Intent(Patient.this , WelcomePage.class);
-                                startActivity(h);
+                                startActivity(h);*/
                             }
                         });
 
@@ -153,32 +153,22 @@ private  Date date = null;
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
 
-                                Toast.makeText(Patient.this ,"The appointment is cancelled by doctor !", Toast.LENGTH_SHORT).show();
+                               /* Toast.makeText(Patient.this ,"The appointment is cancelled by doctor !", Toast.LENGTH_SHORT).show();
                                 Intent h= new Intent(Patient.this , WelcomePage.class);
-                                startActivity(h);
+                                startActivity(h);*/
                             }
                         });
             }
 
         }
-
-
-
     }
-
     public void SetUpViewPager (ViewPager viewpage){
         MyViewPageAdapter Adapter = new MyViewPageAdapter(getSupportFragmentManager());
         Adapter.AddFragmentPage(new pwaiting(), "Waiting Page");
         Adapter.AddFragmentPage(new entertainment(), "Entertainment");
-
-
         Adapter.AddFragmentPage(new Pprofile(), "Profile");
-
-
         //We Need Fragment class now
-
         viewpage.setAdapter(Adapter);
-
     }
 
     public class MyViewPageAdapter extends FragmentPagerAdapter{
@@ -231,6 +221,4 @@ private  Date date = null;
 
         return super.onOptionsItemSelected(item);
     }
-
-
 }

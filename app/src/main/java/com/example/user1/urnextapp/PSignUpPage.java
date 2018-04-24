@@ -5,14 +5,15 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.format.Time;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.EditText;
 import android.widget.Toast;
-import 	android.app.ProgressDialog;
 import java.lang.*;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -22,6 +23,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 public class PSignUpPage extends AppCompatActivity {
 
@@ -35,6 +38,8 @@ public class PSignUpPage extends AppCompatActivity {
     private FirebaseAuth auth;
     private   FirebaseDatabase database = FirebaseDatabase.getInstance();
     private   DatabaseReference Patient = database.getReference("Patient");
+    FirebaseFirestore store = FirebaseFirestore.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +53,7 @@ public class PSignUpPage extends AppCompatActivity {
         phone = (EditText) findViewById(R.id.phone);
 
         buttonSignup = (Button) findViewById(R.id.buttonSignup);
+        store= FirebaseFirestore.getInstance(); //fire store instance
 
 
         buttonSignup.setOnClickListener(new View.OnClickListener() {
@@ -103,6 +109,14 @@ public class PSignUpPage extends AppCompatActivity {
                                     assert user != null;
 
                                     String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                    // get user token id so, we can send to him a notification
+                                    String Token_ID= FirebaseInstanceId.getInstance().getToken();
+                                    Map<String,Object> token_map= new HashMap<>();
+                                    token_map.put("Token_ID", Token_ID);
+                                    store.collection("Usres").document(uid).set(token_map);
+                                    store.collection("Usres").document(uid).collection("Notifications").add(token_map);
+
+
                                     Patient.child(uid).child("Name").setValue(name1);
                                     Patient.child(uid).child("Phone").setValue(phone1);
                                     Patient.child(uid).child("sport").setValue("0");
