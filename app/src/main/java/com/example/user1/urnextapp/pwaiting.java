@@ -48,7 +48,6 @@ public class pwaiting extends Fragment {
     private TextView queueNumber;
     private TextView estimate;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-
     private FirebaseAuth firebaseAuth= FirebaseAuth.getInstance();
     private FirebaseUser user = firebaseAuth.getCurrentUser();
     DatabaseReference Patient = database.getReference("Patient");
@@ -57,9 +56,7 @@ public class pwaiting extends Fragment {
     String id=" ";
     String papp;
     public pwaiting(){
-
     };
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View PageOne = inflater.inflate(R.layout.fragment_pwaiting, container, false);
@@ -76,14 +73,11 @@ public class pwaiting extends Fragment {
             //    final Time today = new Time(Time.getCurrentTimezone());
              //   today.setToNow();
               //  final String tod = today.format("%k:%M");
-
                 Patient.child(id).addValueEventListener(new ValueEventListener() {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         final String pname = dataSnapshot.child("Name").getValue(String.class);
                         final String pphone = dataSnapshot.child("Phone").getValue(String.class);
-
                         final String arrival1 = dataSnapshot.child("arrival").getValue(String.class);
-
                         external.child("Appointment").child("Dental clinic").child(pphone).addValueEventListener(new ValueEventListener() {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 String dname = dataSnapshot.child("Doctor Name").getValue(String.class);
@@ -93,10 +87,7 @@ public class pwaiting extends Fragment {
                                     waiting.child(dname).child(papp).setValue(id);
                                     waiting.child(dname).orderByKey().endAt(papp).addValueEventListener(new ValueEventListener() {
                                         public void onDataChange(DataSnapshot dataSnapshot) {
-
                                                 String count = "" + dataSnapshot.getChildrenCount();
-
-
                                                 DateFormat df = new java.text.SimpleDateFormat("hh:mm");
                                                 Date date1 = null;
                                                 long diff;
@@ -114,7 +105,6 @@ public class pwaiting extends Fragment {
                                                         timeInSeconds = timeInSeconds - (minutes * 60);
 
                                                         reverseTimer((int) diff);
-
                                                     }
                                                     if (date2.after(date1)) {
                                                         estimate.setText("00:00:00");
@@ -125,47 +115,28 @@ public class pwaiting extends Fragment {
                                                     e.printStackTrace();
                                                 }
                                             }
-
-
                                         @Override
                                         public void onCancelled(DatabaseError databaseError) {
                                         }
                                     });
-
-
-
-
                                 } else
                                 {
                                     queueNumber.setText("0");
                                     estimate.setText("00:00:00");
                                 }
-
                             }
-
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
                             }
                         });
-
                     }
-
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                     }
                 });
-
-
-
-
-
            return PageOne;
     }
-
-
-
     public void reverseTimer(int Seconds) {
-
         new CountDownTimer(Seconds, 1000) {
 
             public void onTick(long millisUntilFinished) {
@@ -186,5 +157,4 @@ public class pwaiting extends Fragment {
             }
         }.start();
         }
-
 }

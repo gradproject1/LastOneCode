@@ -1,6 +1,4 @@
 package com.example.user1.urnextapp;
-
-
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -32,10 +30,7 @@ import com.google.firebase.storage.UploadTask;
 
 import static android.app.Activity.RESULT_OK;
 import static com.estimote.coresdk.common.config.EstimoteSDK.getApplicationContext;
-
-
 public class addDN extends Fragment {
-
    private Button selectDIY;
    private Button selectHealth;
    private Button mSelectFashion;
@@ -68,12 +63,9 @@ public class addDN extends Fragment {
    int Image_Request_Code = 7;
    //Constructor default
    public addDN(){};
-
    @Override
    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
       View PageOne = inflater.inflate(R.layout.fragment_add_dn, container, false);
-
-
       mStorage = FirebaseStorage.getInstance().getReference();
       selectDIY = (Button) PageOne.findViewById(R.id.selectDIY);
       selectHealth = (Button) PageOne.findViewById(R.id.selectHealth);
@@ -86,9 +78,6 @@ public class addDN extends Fragment {
       article = (EditText) PageOne.findViewById(R.id.articleLink);
       logout = (Button) PageOne.findViewById(R.id.logout3);
       mprogressDialog = new ProgressDialog(getActivity());
-
-
-
       selectDIY.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
@@ -205,20 +194,13 @@ public class addDN extends Fragment {
       return PageOne;
    }
 ///////////////////////////////////////////////////////////
-
    // Creating Method to get the selected image file Extension from File Path URI.
    public String GetFileExtension(Uri uri) {
-
       ContentResolver contentResolver = getContext().getContentResolver();
-
       MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-
       // Returning the file Extension.
       return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri)) ;
-
    }
-
-
    @Override
    public void onActivityResult(int requestCode, int resultCode, Intent Data){
       super.onActivityResult(requestCode,resultCode,Data);
@@ -229,7 +211,6 @@ public class addDN extends Fragment {
          mprogressDialog.show();
          Uri uri = Data.getData();
          StorageReference filepath = mStorage.child("DIY").child(uri.getLastPathSegment());
-
          filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -240,22 +221,17 @@ public class addDN extends Fragment {
          });
             // Creating second StorageReference.
             StorageReference storageReference2nd = mStorage.child("DIY/" + System.currentTimeMillis() + "." + GetFileExtension(uri));
-
             // Adding addOnSuccessListener to second StorageReference.
             storageReference2nd.putFile(uri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                        @Override
                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
                           // Showing toast message after done uploading.
                           Toast.makeText(getContext(), "Image Uploaded Successfully ", Toast.LENGTH_LONG).show();
-
                           @SuppressWarnings("VisibleForTests")
                           entertainment_List_Information imageUploadInfo = new entertainment_List_Information( taskSnapshot.getDownloadUrl().toString(),article.getText().toString());
-
                           // Getting image upload ID.
                           String ImageUploadId = databaseReference.push().getKey();
-
                           // Adding image upload id s child element into databaseReference.
                           databaseReference.child("diy").child(ImageUploadId).child("url").setValue(imageUploadInfo.getImageURL());
                           databaseReference.child("diy").child(ImageUploadId).child("article").setValue(imageUploadInfo.getImageArticle());
@@ -265,59 +241,45 @@ public class addDN extends Fragment {
                     .addOnFailureListener(new OnFailureListener() {
                        @Override
                        public void onFailure(@NonNull Exception exception) {
-
                        }
                     })
-
                     // On progress change upload time.
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                        @Override
                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-
                           // Setting progressDialog Title.
                           mprogressDialog.setTitle("Image is Uploading...");
-
                        }
                     });}
             else {    Toast.makeText(getContext(), "Please enter the article link ", Toast.LENGTH_LONG).show();}
       }
       ///////////////////////////////////////////////////
-
       else if(requestCode == Health_INTENT){
             if ( !article.getText().toString().isEmpty()){
             mprogressDialog.setMessage(" Uploading... ");
             mprogressDialog.show();
-
             Uri uri = Data.getData();
             StorageReference filepath = mStorage.child("Health").child(uri.getLastPathSegment());
-
             filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                @Override
                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                   Toast.makeText(getActivity(),"Upload done",Toast.LENGTH_LONG).show();
                   mprogressDialog.dismiss();
-
-
                }
             });
             // Creating second StorageReference.
             StorageReference storageReference2nd = mStorage.child("Health/" + System.currentTimeMillis() + "." + GetFileExtension(uri));
-
             // Adding addOnSuccessListener to second StorageReference.
             storageReference2nd.putFile(uri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                        @Override
                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
                           // Showing toast message after done uploading.
                           Toast.makeText(getContext(), "Image Uploaded Successfully ", Toast.LENGTH_LONG).show();
-
                           @SuppressWarnings("VisibleForTests")
                           entertainment_List_Information imageUploadInfo = new entertainment_List_Information( taskSnapshot.getDownloadUrl().toString(), article.getText().toString());
-
                           // Getting image upload ID.
                           String ImageUploadId = databaseReference.push().getKey();
-
                           // Adding image upload id s child element into databaseReference.
                           databaseReference.child("health").child(ImageUploadId).child("url").setValue(imageUploadInfo.getImageURL());
                           databaseReference.child("health").child(ImageUploadId).child("article").setValue(imageUploadInfo.getImageArticle());
@@ -327,30 +289,23 @@ public class addDN extends Fragment {
                     .addOnFailureListener(new OnFailureListener() {
                        @Override
                        public void onFailure(@NonNull Exception exception) {
-
                        }
                     })
-
                     // On progress change upload time.
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                        @Override
                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-
                           // Setting progressDialog Title.
                           mprogressDialog.setTitle("Image is Uploading...");
-
                        }
                     });}
             else {Toast.makeText(getContext(), "Please enter the article link ", Toast.LENGTH_LONG).show();}
          }
-
          //////////////////////////////////////////////////////
-
          else if(requestCode == FASHION_INTENT){
             if (!article.getText().toString().isEmpty()){
             mprogressDialog.setMessage(" Uploading... ");
             mprogressDialog.show();
-
             Uri uri = Data.getData();
             StorageReference filepath = mStorage.child("Fashion").child(uri.getLastPathSegment());
             filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -358,150 +313,101 @@ public class addDN extends Fragment {
                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                   Toast.makeText(getActivity(),"Upload done",Toast.LENGTH_LONG).show();
                   mprogressDialog.dismiss();
-
                }
             });
             // Creating second StorageReference.
             StorageReference storageReference2nd = mStorage.child("Fashion/" + System.currentTimeMillis() + "." + GetFileExtension(uri));
-
             // Adding addOnSuccessListener to second StorageReference.
             storageReference2nd.putFile(uri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                        @Override
                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
                           // Showing toast message after done uploading.
                           Toast.makeText(getContext(), "Image Uploaded Successfully ", Toast.LENGTH_LONG).show();
-
                           @SuppressWarnings("VisibleForTests")
                           entertainment_List_Information imageUploadInfo = new entertainment_List_Information( taskSnapshot.getDownloadUrl().toString(),article.getText().toString());
-
                           // Getting image upload ID.
                           String ImageUploadId = databaseReference.push().getKey();
-
-                          // Adding image upload id s child element into databaseReference.
-                          databaseReference.child("fashion").child(ImageUploadId).child("url").setValue(imageUploadInfo.getImageURL());
-                          databaseReference.child("fashion").child(ImageUploadId).child("article").setValue(imageUploadInfo.getImageArticle());
-                       }
-                    })
+                       }})
                     // If something goes wrong .
                     .addOnFailureListener(new OnFailureListener() {
                        @Override
-                       public void onFailure(@NonNull Exception exception) {
-
-                       }
-                    })
-
+                       public void onFailure(@NonNull Exception exception) {}})
                     // On progress change upload time.
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                        @Override
                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-
                           // Setting progressDialog Title.
-                          mprogressDialog.setTitle("Image is Uploading...");
-
-                       }
-                    });}
-            else {Toast.makeText(getContext(), "Please enter the article link ", Toast.LENGTH_LONG).show();}
-
-         }
+                          mprogressDialog.setTitle("Image is Uploading...");}});}
+            else {Toast.makeText(getContext(), "Please enter the article link ", Toast.LENGTH_LONG).show();}}
 ///////////////////////////////////////////////
-
          else if(requestCode == BOOK_INTENT){
             if (!article.getText().toString().isEmpty()){
             mprogressDialog.setMessage(" Uploading... ");
             mprogressDialog.show();
-
             Uri uri = Data.getData();
             StorageReference filepath = mStorage.child("Book").child(uri.getLastPathSegment());
             filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                @Override
                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                   Toast.makeText(getActivity(),"Upload done",Toast.LENGTH_LONG).show();
-                  mprogressDialog.dismiss();
-
-               }
+                  mprogressDialog.dismiss();}
             });
-
             // Creating second StorageReference.
             StorageReference storageReference2nd = mStorage.child("Book/" + System.currentTimeMillis() + "." + GetFileExtension(uri));
-
             // Adding addOnSuccessListener to second StorageReference.
             storageReference2nd.putFile(uri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                        @Override
                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
                           // Showing toast message after done uploading.
                           Toast.makeText(getContext(), "Image Uploaded Successfully ", Toast.LENGTH_LONG).show();
-
                           @SuppressWarnings("VisibleForTests")
                           entertainment_List_Information imageUploadInfo = new entertainment_List_Information( taskSnapshot.getDownloadUrl().toString(),article.getText().toString());
-
                           // Getting image upload ID.
                           String ImageUploadId = databaseReference.push().getKey();
-
                           // Adding image upload id s child element into databaseReference.
                           databaseReference.child("book").child(ImageUploadId).child("url").setValue(imageUploadInfo.getImageURL());
-                          databaseReference.child("book").child(ImageUploadId).child("article").setValue(imageUploadInfo.getImageArticle());
-                       }
+                          databaseReference.child("book").child(ImageUploadId).child("article").setValue(imageUploadInfo.getImageArticle());}
                     })
                     // If something goes wrong .
                     .addOnFailureListener(new OnFailureListener() {
                        @Override
-                       public void onFailure(@NonNull Exception exception) {
-
-                       }
-                    })
-
+                       public void onFailure(@NonNull Exception exception) {}})
                     // On progress change upload time.
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                        @Override
                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-
                           // Setting progressDialog Title.
                           mprogressDialog.setTitle("Image is Uploading...");
-
                        }
                     });}
-            else {Toast.makeText(getContext(), "Please enter the article link ", Toast.LENGTH_LONG).show();}
-         }
+            else {Toast.makeText(getContext(), "Please enter the article link ", Toast.LENGTH_LONG).show();}}
 //////////////////////////////////////////
-
          else if(requestCode == Travil_INTENT){
             if ( !article.getText().toString().isEmpty()){
                mprogressDialog.setMessage(" Uploading... ");
                mprogressDialog.show();
-
                Uri uri = Data.getData();
                StorageReference filepath = mStorage.child("Travil").child(uri.getLastPathSegment());
                filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                   @Override
                   public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                      Toast.makeText(getActivity(),"Upload done",Toast.LENGTH_LONG).show();
-                     mprogressDialog.dismiss();
-
-                  }
-               });
-
+                     mprogressDialog.dismiss();}});
                // Creating second StorageReference.
                StorageReference storageReference2nd = mStorage.child("Travil/" + System.currentTimeMillis() + "." + GetFileExtension(uri));
-
                // Adding addOnSuccessListener to second StorageReference.
                storageReference2nd.putFile(uri)
                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                           @Override
                           public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
                              // Showing toast message after done uploading.
                              Toast.makeText(getContext(), "Image Uploaded Successfully ", Toast.LENGTH_LONG).show();
-
                              @SuppressWarnings("VisibleForTests")
                              entertainment_List_Information imageUploadInfo = new entertainment_List_Information( taskSnapshot.getDownloadUrl().toString(),article.getText().toString());
-
                              // Getting image upload ID.
                              String ImageUploadId = databaseReference.push().getKey();
-
                              // Adding image upload id s child element into databaseReference.
                              databaseReference.child("travil").child(ImageUploadId).child("url").setValue(imageUploadInfo.getImageURL());
                              databaseReference.child("travil").child(ImageUploadId).child("article").setValue(imageUploadInfo.getImageArticle());
@@ -510,30 +416,22 @@ public class addDN extends Fragment {
                        // If something goes wrong .
                        .addOnFailureListener(new OnFailureListener() {
                           @Override
-                          public void onFailure(@NonNull Exception exception) {
-
-                          }
-                       })
-
+                          public void onFailure(@NonNull Exception exception) {}})
                        // On progress change upload time.
                        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                           @Override
                           public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-
                              // Setting progressDialog Title.
                              mprogressDialog.setTitle("Image is Uploading...");
-
                           }
                        });}
             else {Toast.makeText(getContext(), "Please enter the article link ", Toast.LENGTH_LONG).show();}
          }
          /////////////////////////////////////////////
-
          else if(requestCode == Technology_INTENT){
             if ( !article.getText().toString().isEmpty()){
                mprogressDialog.setMessage(" Uploading... ");
                mprogressDialog.show();
-
                Uri uri = Data.getData();
                StorageReference filepath = mStorage.child("Technology").child(uri.getLastPathSegment());
                filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -541,28 +439,21 @@ public class addDN extends Fragment {
                   public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                      Toast.makeText(getActivity(),"Upload done",Toast.LENGTH_LONG).show();
                      mprogressDialog.dismiss();
-
                   }
                });
-
                // Creating second StorageReference.
                StorageReference storageReference2nd = mStorage.child("Technology/" + System.currentTimeMillis() + "." + GetFileExtension(uri));
-
                // Adding addOnSuccessListener to second StorageReference.
                storageReference2nd.putFile(uri)
                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                           @Override
                           public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
                              // Showing toast message after done uploading.
                              Toast.makeText(getContext(), "Image Uploaded Successfully ", Toast.LENGTH_LONG).show();
-
                              @SuppressWarnings("VisibleForTests")
                              entertainment_List_Information imageUploadInfo = new entertainment_List_Information( taskSnapshot.getDownloadUrl().toString(),article.getText().toString());
-
                              // Getting image upload ID.
                              String ImageUploadId = databaseReference.push().getKey();
-
                              // Adding image upload id s child element into databaseReference.
                              databaseReference.child("technology").child(ImageUploadId).child("url").setValue(imageUploadInfo.getImageURL());
                              databaseReference.child("technology").child(ImageUploadId).child("article").setValue(imageUploadInfo.getImageArticle());
@@ -572,29 +463,23 @@ public class addDN extends Fragment {
                        .addOnFailureListener(new OnFailureListener() {
                           @Override
                           public void onFailure(@NonNull Exception exception) {
-
                           }
                        })
-
                        // On progress change upload time.
                        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                           @Override
                           public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-
                              // Setting progressDialog Title.
                              mprogressDialog.setTitle("Image is Uploading...");
-
                           }
                        });}
             else {Toast.makeText(getContext(), "Please enter the article link ", Toast.LENGTH_LONG).show();}
          }
          /////////////////////////////////////
-
          else if(requestCode == History_INTENT){
             if ( !article.getText().toString().isEmpty()){
                mprogressDialog.setMessage(" Uploading... ");
                mprogressDialog.show();
-
                Uri uri = Data.getData();
                StorageReference filepath = mStorage.child("History").child(uri.getLastPathSegment());
                filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -602,28 +487,21 @@ public class addDN extends Fragment {
                   public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                      Toast.makeText(getActivity(),"Upload done",Toast.LENGTH_LONG).show();
                      mprogressDialog.dismiss();
-
                   }
                });
-
                // Creating second StorageReference.
                StorageReference storageReference2nd = mStorage.child("History/" + System.currentTimeMillis() + "." + GetFileExtension(uri));
-
                // Adding addOnSuccessListener to second StorageReference.
                storageReference2nd.putFile(uri)
                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                           @Override
                           public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
                              // Showing toast message after done uploading.
                              Toast.makeText(getContext(), "Image Uploaded Successfully ", Toast.LENGTH_LONG).show();
-
                              @SuppressWarnings("VisibleForTests")
                              entertainment_List_Information imageUploadInfo = new entertainment_List_Information( taskSnapshot.getDownloadUrl().toString(),article.getText().toString());
-
                              // Getting image upload ID.
                              String ImageUploadId = databaseReference.push().getKey();
-
                              // Adding image upload id s child element into databaseReference.
                              databaseReference.child("history").child(ImageUploadId).child("url").setValue(imageUploadInfo.getImageURL());
                              databaseReference.child("history").child(ImageUploadId).child("article").setValue(imageUploadInfo.getImageArticle());
@@ -633,29 +511,21 @@ public class addDN extends Fragment {
                        .addOnFailureListener(new OnFailureListener() {
                           @Override
                           public void onFailure(@NonNull Exception exception) {
-
-                          }
-                       })
-
+                          }})
                        // On progress change upload time.
                        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                           @Override
                           public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-
                              // Setting progressDialog Title.
                              mprogressDialog.setTitle("Image is Uploading...");
-
                           }
                        });}
-            else {Toast.makeText(getContext(), "Please enter the article link ", Toast.LENGTH_LONG).show();}
-         }
+            else {Toast.makeText(getContext(), "Please enter the article link ", Toast.LENGTH_LONG).show();}}
          ///////////////////////////////////
-
          else if(requestCode == Sport_INTENT){
             if ( !article.getText().toString().isEmpty()){
                mprogressDialog.setMessage(" Uploading... ");
                mprogressDialog.show();
-
                Uri uri = Data.getData();
                StorageReference filepath = mStorage.child("Sport").child(uri.getLastPathSegment());
                filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -663,28 +533,21 @@ public class addDN extends Fragment {
                   public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                      Toast.makeText(getActivity(),"Upload done",Toast.LENGTH_LONG).show();
                      mprogressDialog.dismiss();
-
                   }
                });
-
                // Creating second StorageReference.
                StorageReference storageReference2nd = mStorage.child("Sport/" + System.currentTimeMillis() + "." + GetFileExtension(uri));
-
                // Adding addOnSuccessListener to second StorageReference.
                storageReference2nd.putFile(uri)
                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                           @Override
                           public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
                              // Showing toast message after done uploading.
                              Toast.makeText(getContext(), "Image Uploaded Successfully ", Toast.LENGTH_LONG).show();
-
                              @SuppressWarnings("VisibleForTests")
                              entertainment_List_Information imageUploadInfo = new entertainment_List_Information( taskSnapshot.getDownloadUrl().toString(),article.getText().toString());
-
                              // Getting image upload ID.
                              String ImageUploadId = databaseReference.push().getKey();
-
                              // Adding image upload id s child element into databaseReference.
                              databaseReference.child("sport").child(ImageUploadId).child("url").setValue(imageUploadInfo.getImageURL());
                              databaseReference.child("sport").child(ImageUploadId).child("article").setValue(imageUploadInfo.getImageArticle());
@@ -694,27 +557,14 @@ public class addDN extends Fragment {
                        .addOnFailureListener(new OnFailureListener() {
                           @Override
                           public void onFailure(@NonNull Exception exception) {
-
-                          }
-                       })
-
+                          }})
                        // On progress change upload time.
                        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                           @Override
                           public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-
                              // Setting progressDialog Title.
                              mprogressDialog.setTitle("Image is Uploading...");
-
                           }
                        });}
             else {Toast.makeText(getContext(), "Please enter the article link ", Toast.LENGTH_LONG).show();}
-         }
-
-      }
-
-
-   }
-
-
-}
+         }}}}

@@ -28,90 +28,99 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 public class AcceptList extends ArrayAdapter<Accept_List_Information> {
     // class for custom list view with adapter of Accept_List_Information object
-
     private Activity context;
     static List<Accept_List_Information> Patient_List;
-    private Button accept_button;
-    private Chronometer chronometer2,chronometer3;
+    static Button accept_button;
+    static int index=0;
     private String Message = "Hi, it's your turn!"; // message to send when nurse click accept
     private FirebaseFirestore fire_store; // to store user document
-    static Accept_List_Information patient_1, p1,temp1,temp2;
-    static int index=0;
-    static boolean flag=false, flag1=false;
-    static List<Accept_List_Information> timelist;
-    int index2=0;
-    static String t;
-    static TextView text;
-    static long diff, elapsedMillis=0;
-    int count=0,  counter=0;
-    long Countup;
-    static String admission;
     TextView arrival;
+    static View v;
     private static FirebaseDatabase database = FirebaseDatabase.getInstance();
     static DatabaseReference admission_table = database.getReference("admission time");
-
-
-
-
     AcceptList(Activity context, List<Accept_List_Information> patient) {
         super(context, R.layout.list_layout, patient);
         this.context = context;
         this.Patient_List = patient;
     }
-
-
     @RequiresApi(api = Build.VERSION_CODES.N)
     @NonNull
     @Override
     public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
         @SuppressLint({"InflateParams", "ViewHolder"}) View listViewItem = inflater.inflate(R.layout.list_layout, null, true);
-
         TextView name = (TextView) listViewItem.findViewById(R.id.pname);
         arrival = (TextView) listViewItem.findViewById(R.id.textView12);
         TextView time = (TextView) listViewItem.findViewById(R.id.textView8);
         TextView number = (TextView) listViewItem.findViewById(R.id.number);
         accept_button = (Button) listViewItem.findViewById(R.id.accept);
-       // chronometer2=(Chronometer)listViewItem.findViewById(R.id.chronometer2);
-        //chronometer3=(Chronometer)listViewItem.findViewById(R.id.chronometer3);
-
         fire_store = FirebaseFirestore.getInstance(); // fire store to store user notification inside his document
         admission_table.child(AcceptPatient.Doctor_Name).setValue("");
-
-
         Accept_List_Information patient_Information = Patient_List.get(position);
         name.setText(patient_Information.getname());
         time.setText(patient_Information.gettime());
         arrival.setText(patient_Information.getarrival());
-        number.setText(position+1+"");
+        number.setText(position + 1 + "");
+        v = AcceptPatient.AcceptList.getChildAt(index);
+        accept_button.setVisibility(View.INVISIBLE);
 
-//        chronometer2.setVisibility(View.INVISIBLE);
-      //  chronometer3.setVisibility(View.INVISIBLE);
+        if(Patient_List.size()==1){
+            accept_button.setVisibility(View.VISIBLE);
+            accept_button.setOnClickListener(new View.OnClickListener() {
+                // check if the button clicked then remove patient from list view by his position
+                // and also remove him from waiting table by appointment time and from appointment table by his phone number
+                @Override
+                public void onClick(View v) {
+                    Patient_List.remove(index);
+                    AcceptPatient.AcceptList.setAdapter(AcceptPatient.adapter);
+                    AcceptPatient.adapter.notifyDataSetChanged();
+                    // delete him from waiting data
+                    AcceptPatient.waiting_table.child(AcceptPatient.Doctor_Name).child(AcceptPatient.appTime.get(index)).removeValue();
+                    // delete him from appointment data
+                    AcceptPatient.external_data.child("Appointment").child("Dental clinic").child(AcceptPatient.patient_phone.get(index)).removeValue();
+                    // store admission time when nurse click accept
+                    final Time today = new Time(Time.getCurrentTimezone());
+                    today.setToNow();
+                    String Today = today.format("%k:%M");
+                    AcceptPatient.patient_table.child(AcceptPatient.patient_ID.get(index)).child(" admission time").setValue(Today);
 
-
+                    // each user have a document of notification
+                    Map<String, Object> notification_message = new HashMap<>(); //map between user and his collection
+                    notification_message.put("Message", Message); //put the message in patient collection
+                    notification_message.put("From", AcceptPatient.User_ID);
+                    fire_store.collection("Usres/" + AcceptPatient.patient_ID.get(position) + "/Notifications").add(notification_message).addOnSuccessListener(new OnSuccessListener() {
+                        @Override
+                        public void onSuccess(Object o) {
+                        }
+                    });
+                    AcceptPatient.appTime.remove(index);
+                    AcceptPatient.patient_phone.remove(index);
+                    AcceptPatient.patient_ID.remove(index);
+                }
+            });
+        }
+        if (v != null) {
+            accept_button = v.findViewById(R.id.accept);
+            accept_button.setVisibility(View.VISIBLE);
         accept_button.setOnClickListener(new View.OnClickListener() {
             // check if the button clicked then remove patient from list view by his position
             // and also remove him from waiting table by appointment time and from appointment table by his phone number
             @Override
             public void onClick(View v) {
-                //flag=true;
-                //flag1=true;
-                //text=null;
-                Patient_List.remove(position);
+                Patient_List.remove(index);
                 AcceptPatient.AcceptList.setAdapter(AcceptPatient.adapter);
                 AcceptPatient.adapter.notifyDataSetChanged();
                 // delete him from waiting data
-                AcceptPatient.waiting_table.child(AcceptPatient.Doctor_Name).child(AcceptPatient.appTime.get(position)).removeValue();
+                AcceptPatient.waiting_table.child(AcceptPatient.Doctor_Name).child(AcceptPatient.appTime.get(index)).removeValue();
                 // delete him from appointment data
-                AcceptPatient.external_data.child("Appointment").child("Dental clinic").child(AcceptPatient.patient_phone.get(position)).removeValue();
+                AcceptPatient.external_data.child("Appointment").child("Dental clinic").child(AcceptPatient.patient_phone.get(index)).removeValue();
                 // store admission time when nurse click accept
                 final Time today = new Time(Time.getCurrentTimezone());
                 today.setToNow();
                 String Today = today.format("%k:%M");
-                AcceptPatient.patient_table.child(AcceptPatient.patient_ID.get(position)).child(" admission time").setValue(Today);
+                AcceptPatient.patient_table.child(AcceptPatient.patient_ID.get(index)).child(" admission time").setValue(Today);
 
                 // each user have a document of notification
                 Map<String, Object> notification_message = new HashMap<>(); //map between user and his collection
@@ -122,13 +131,19 @@ public class AcceptList extends ArrayAdapter<Accept_List_Information> {
                     public void onSuccess(Object o) {
                     }
                 });
-                AcceptPatient.appTime.remove(position);
-                AcceptPatient.patient_phone.remove(position);
-                AcceptPatient.patient_ID.remove(position);
+                AcceptPatient.appTime.remove(index);
+                AcceptPatient.patient_phone.remove(index);
+                AcceptPatient.patient_ID.remove(index);
             }
         });
+    }
+        return listViewItem;
+    }
+    }
 
- /*if(index<=Patient_List.size()){
+
+
+/*if(index<=Patient_List.size()){
         p1 = Patient_List.get(0);
         patient_1 = Patient_List.get(0);
         }
@@ -161,9 +176,8 @@ public class AcceptList extends ArrayAdapter<Accept_List_Information> {
         } catch (ParseException e) {
             e.printStackTrace();
         }*/
-        return listViewItem;
-    }
-   /* public void reverseTimer(int Seconds) {
+/*******************************************/
+  /* public void reverseTimer(int Seconds) {
 
         new CountDownTimer(Seconds, 1000) {
 
@@ -208,6 +222,3 @@ public class AcceptList extends ArrayAdapter<Accept_List_Information> {
             }
         }.start();
     }*/
-    }
-
-

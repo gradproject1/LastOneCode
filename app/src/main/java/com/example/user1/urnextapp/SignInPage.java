@@ -30,7 +30,6 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.HashMap;
 import java.util.Map;
-
 public class SignInPage extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     DatabaseReference databaseReference ;
@@ -48,13 +47,11 @@ public class SignInPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in_page);
-
         inputEmail = (EditText)findViewById(R.id.editTextEmailAddress);
         inputPassword = (EditText)findViewById(R.id.editText_Password);
         sign_in = (Button)findViewById(R.id.button3);
         sign_up = (TextView)findViewById(R.id.textView3);
         forgotPassword = (TextView)findViewById(R.id.textView);
-
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
         fire_store= FirebaseFirestore.getInstance(); //fire store instance
@@ -70,7 +67,6 @@ public class SignInPage extends AppCompatActivity {
                 }
             }
         };
-
         sign_in.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,13 +102,12 @@ public class SignInPage extends AppCompatActivity {
                                 Map<String,Object> token_map= new HashMap<>();
                                 token_map.put("Token_ID", Token_ID);
                                 fire_store.collection("Usres").document(uid).set(token_map).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                                                        @Override
-                                                                                                                        public void onSuccess(Void aVoid) {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
 
-                                                                                                                        }
-                                                                                                                    });
+                                    }
+                                });
                                     // if user verify his email allow him to login else send email for verification
-
                                     //depend on email format open specific page
                                     if(e.matches(emailAdminPattern)){
                                         Intent i = new Intent(SignInPage.this, Admin.class);
@@ -146,43 +141,27 @@ public class SignInPage extends AppCompatActivity {
                                                                     Toast.makeText(SignInPage.this,"You are not in the range" , Toast.LENGTH_LONG).show();
 
                                                                 }
-
-
                                                            }else
                                                             {
                                                                 Toast.makeText(SignInPage.this,"You don't have an appointment" , Toast.LENGTH_LONG).show();
                                                                 startActivity(new Intent(SignInPage.this, WelcomePage.class));
                                                                 finish();
-
                                                             }
                                                         }
-
                                                         @Override
                                                         public void onCancelled(DatabaseError databaseError) {
                                                         }
-                                                    });
-
-                                                }
-
+                                                    });}
                                                 @Override
                                                 public void onCancelled(DatabaseError databaseError) {
                                                 }
-                                            });
-
-
-                                           }
+                                            });}
                                          else if (!user.isEmailVerified()) {
                                                 Toast.makeText(SignInPage.this, "Please confirm your email", Toast.LENGTH_SHORT).show();
                                                 user.sendEmailVerification();
-                                    }
-                                }
-
-
-                            }
+                                    }}}
                             if (!task.isSuccessful()) {
-
-                            }
-                        }
+                            }}
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) { // exception of login
@@ -194,14 +173,9 @@ public class SignInPage extends AppCompatActivity {
                             }
                             if (e instanceof FirebaseNetworkException) {
                                 Toast.makeText(SignInPage.this, "Please check your connection", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                }
-
+                            }}});}
             }
         });
-
         sign_up.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) { //open sign up if user dos'nt have an account

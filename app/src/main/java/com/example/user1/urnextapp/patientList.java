@@ -35,7 +35,6 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
-
 public class patientList extends Fragment {
     // fire base tables
     private static FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -44,55 +43,39 @@ public class patientList extends Fragment {
     static DatabaseReference patient_table = database.getReference("Patient");
     static DatabaseReference external_data = database.getReference("ExternalDB");
     static DatabaseReference waiting_table = database.getReference("waiting time and queue number");
-
     static String User_ID=" ";
     static ListView list_patient;
     static list_patient adapter;
     static String Doctor_Name;
-    static String Nurse_Name;
-    private int count=0;
-
     static ArrayList<String> appTime = new ArrayList<>();
     static ArrayList<String> patient_phone = new ArrayList<>();
     static ArrayList<String> patient_ID = new ArrayList<>();
     static ArrayList<Accept_List_Information> PatientList;
-
-
     //Constructor default
     public patientList(){};
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View PageOne = inflater.inflate(R.layout.fragment_patient_list, container, false);
-
         list_patient = (ListView) PageOne.findViewById(R.id.listViewPatient);
-
-
         PatientList = new ArrayList<>();
         if (user != null) {
             User_ID = user.getUid();
         }
-
-
         external_data.child("Doctors").child(User_ID).addValueEventListener(new ValueEventListener() {
             // get doctor name from doctor data
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Doctor_Name = dataSnapshot.child("Name").getValue(String.class);
-
                 assert Doctor_Name != null;
                 waiting_table.child(Doctor_Name).addChildEventListener(new ChildEventListener() {
                     //search by doctor name in waiting table to get patient id
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
                         final String user_ID = dataSnapshot.getValue(String.class);
                         assert user_ID != null;
-
                         patient_table.child(user_ID).addValueEventListener(new ValueEventListener() {
                             //get patient name and phone number to search about him in appointment data
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-
                                 final String phone_number = dataSnapshot.child("Phone").getValue(String.class);
                                 final String arrival = dataSnapshot.child("arrival").getValue(String.class);
                                 assert phone_number != null;
@@ -102,8 +85,6 @@ public class patientList extends Fragment {
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         String name = dataSnapshot.child(phone_number).child("Name").getValue(String.class);
                                         String app_time = dataSnapshot.child(phone_number).child("appTime").getValue(String.class);
-
-
                                         if (name != null && appTime != null) {
                                             Accept_List_Information Patient_information = new Accept_List_Information(name, app_time,arrival);
                                             if (PatientList.isEmpty() == true) {
@@ -147,11 +128,7 @@ public class patientList extends Fragment {
 
                                     @Override
                                     public void onCancelled(DatabaseError databaseError) {
-                                    }//app
-                                });//app
-
-                            }//app
-
+                                    }});}
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
                             }

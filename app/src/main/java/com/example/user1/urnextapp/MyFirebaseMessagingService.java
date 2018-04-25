@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 
 import com.google.firebase.messaging.RemoteMessage;
-
 // class for retrieve notification from fire base and create notification
 public class MyFirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
 

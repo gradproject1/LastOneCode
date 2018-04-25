@@ -1,5 +1,4 @@
 package com.example.user1.urnextapp;
-
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -31,11 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.estimote.coresdk.common.config.EstimoteSDK.getApplicationContext;
-
-
 public class entertainment extends Fragment {
-
-
     // fire base tables
     private static FirebaseDatabase database = FirebaseDatabase.getInstance();
     private FirebaseAuth firebaseAuth= FirebaseAuth.getInstance();
@@ -44,48 +39,31 @@ public class entertainment extends Fragment {
     static DatabaseReference enter_table = database.getReference("entertainment");
     static String User_ID=" ";
     static TextView article;
-
-
-
     //Constructor default
     public entertainment(){};
-
     // Creating RecyclerView.
     RecyclerView recyclerView;
-
     // Creating RecyclerView.Adapter.
-    RecyclerView.Adapter adapter ;
-
-
+    RecyclerView.Adapter adapter;
     // Creating List of ImageUploadInfo class.
     List<entertainment_List_Information> list = new ArrayList<>();
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View PageOne = inflater.inflate(R.layout.fragment_entertainment, container, false);
-
 article=(TextView) PageOne.findViewById(R.id.article);
-
         if (user != null) {
             User_ID = user.getUid();
         }
-
-
         // Assign id to RecyclerView.
         recyclerView = (RecyclerView) PageOne.findViewById(R.id.recyclerView);
-
         // Setting RecyclerView size true.
         recyclerView.setHasFixedSize(true);
-
         // Setting RecyclerView layout as LinearLayout.
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
         patient_table.child(User_ID).addValueEventListener(new ValueEventListener() {
             //get patient name and phone number to search about him in appointment data
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
                 final String health = dataSnapshot.child("health").getValue(String.class);
                 final String diy = dataSnapshot.child("diy").getValue(String.class);
                 final String fashion = dataSnapshot.child("fashion").getValue(String.class);
@@ -102,30 +80,22 @@ article=(TextView) PageOne.findViewById(R.id.article);
                 assert history != null;
                 assert book != null;
                 assert travil != null;
-
                 if (health.equals("1")) {
                     // Adding Add Value Event Listener to databaseReference.
                     enter_table.child("health").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
-
                             for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-
                                 String url = postSnapshot.child("url").getValue(String.class);
                                 String articleLink =postSnapshot.child("article").getValue(String.class);
                                 entertainment_List_Information imageUploadInfo = new entertainment_List_Information(url,articleLink);
-
                              list.add(imageUploadInfo);
                             }
-
                            adapter = new RecyclerViewAdapter(getContext(), list);
-
                            recyclerView.setAdapter(adapter);
                         }
-
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-
                         }
                     });
                 }
@@ -135,24 +105,17 @@ article=(TextView) PageOne.findViewById(R.id.article);
                     enter_table.child("diy").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
-
                             for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-
                                 String url = postSnapshot.child("url").getValue(String.class);
                                 String articleLink =postSnapshot.child("article").getValue(String.class);
                                 entertainment_List_Information imageUploadInfo = new entertainment_List_Information(url,articleLink);
-
                                list.add(imageUploadInfo);
                             }
-
                           adapter = new RecyclerViewAdapter(getContext(), list);
-
                           recyclerView.setAdapter(adapter);
                         }
-
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-
                         }
                     });
                 }
@@ -162,28 +125,19 @@ article=(TextView) PageOne.findViewById(R.id.article);
                     enter_table.child("fashion").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
-
                             for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-
                                 String url = postSnapshot.child("url").getValue(String.class);
                                 String articleLink =postSnapshot.child("article").getValue(String.class);
-
                                 entertainment_List_Information imageUploadInfo = new entertainment_List_Information(url,articleLink);
-
                              list.add(imageUploadInfo);
                             }
-
                             adapter = new RecyclerViewAdapter(getContext(), list);
-
                           recyclerView.setAdapter(adapter);
                         }
-
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-
                         }
                     });
-
                 }
                 else if (sport.equals("1"))
                 {
@@ -191,52 +145,37 @@ article=(TextView) PageOne.findViewById(R.id.article);
                     enter_table.child("sport").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
-
                             for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-
                                 String url = postSnapshot.child("url").getValue(String.class);
                                 String articleLink =postSnapshot.child("article").getValue(String.class);
                                 entertainment_List_Information imageUploadInfo = new entertainment_List_Information(url,articleLink);
-
                                 list.add(imageUploadInfo);
                             }
-
                           adapter = new RecyclerViewAdapter(getContext(), list);
-
                          recyclerView.setAdapter(adapter);
                         }
-
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-
                         }
                     });
                 }
-
                 else if (technology.equals("1"))
                 {
                     // Adding Add Value Event Listener to databaseReference.
                     enter_table.child("technology").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
-
                             for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-
                                 String url = postSnapshot.child("url").getValue(String.class);
                                 String articleLink =postSnapshot.child("article").getValue(String.class);
                                 entertainment_List_Information imageUploadInfo = new entertainment_List_Information(url,articleLink);
-
                                 list.add(imageUploadInfo);
                             }
-
                             adapter = new RecyclerViewAdapter(getContext(), list);
-
                             recyclerView.setAdapter(adapter);
                         }
-
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-
                         }
                     });
                 }
@@ -246,24 +185,17 @@ article=(TextView) PageOne.findViewById(R.id.article);
                     enter_table.child("history").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
-
                             for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-
                                 String url = postSnapshot.child("url").getValue(String.class);
                                 String articleLink =postSnapshot.child("article").getValue(String.class);
                                 entertainment_List_Information imageUploadInfo = new entertainment_List_Information(url,articleLink);
-
                                 list.add(imageUploadInfo);
                             }
-
                             adapter = new RecyclerViewAdapter(getContext(), list);
-
                             recyclerView.setAdapter(adapter);
                         }
-
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-
                         }
                     });
                 }
@@ -273,24 +205,17 @@ article=(TextView) PageOne.findViewById(R.id.article);
                     enter_table.child("travil").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
-
                             for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-
                                 String url = postSnapshot.child("url").getValue(String.class);
                                 String articleLink =postSnapshot.child("article").getValue(String.class);
                                 entertainment_List_Information imageUploadInfo = new entertainment_List_Information(url,articleLink);
-
                                 list.add(imageUploadInfo);
                             }
-
                             adapter = new RecyclerViewAdapter(getContext(), list);
-
                             recyclerView.setAdapter(adapter);
                         }
-
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-
                         }
                     });
                 }
@@ -300,36 +225,23 @@ article=(TextView) PageOne.findViewById(R.id.article);
                     enter_table.child("book").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
-
                             for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-
                                 String url = postSnapshot.child("url").getValue(String.class);
                                 String articleLink =postSnapshot.child("article").getValue(String.class);
                                 entertainment_List_Information imageUploadInfo = new entertainment_List_Information(url,articleLink);
-
                                 list.add(imageUploadInfo);
                             }
-
                             adapter = new RecyclerViewAdapter(getContext(), list);
-
                             recyclerView.setAdapter(adapter);
                         }
-
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-
                         }
                     });
                 }
-
                     }
-
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                     }//app
                 });//app
-
-
-
-                return PageOne;
-    }}
+                return PageOne;}}

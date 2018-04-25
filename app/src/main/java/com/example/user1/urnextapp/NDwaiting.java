@@ -1,5 +1,4 @@
 package com.example.user1.urnextapp;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -31,8 +30,6 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-
 public class NDwaiting extends Fragment {
     private TextView numberOfPatient;
     private Button logout;
@@ -43,19 +40,14 @@ public class NDwaiting extends Fragment {
     DatabaseReference waiting = database.getReference("waiting time and queue number");
     String id=" ";
     private FirebaseFirestore fire_store; //to store token id in his document
-
     //Constructor default
     public NDwaiting(){};
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View p = inflater.inflate(R.layout.fragment_ndwaiting, container, false);
-
         numberOfPatient= (TextView) p.findViewById(R.id.numberOfPatient);
         logout = (Button) p.findViewById(R.id.logout2);
         fire_store= FirebaseFirestore.getInstance(); //fire store instance
-
         if (user != null)
         {
             id=user.getUid();
@@ -69,19 +61,16 @@ public class NDwaiting extends Fragment {
                             final Long count = dataSnapshot.getChildrenCount();
                             numberOfPatient.setText(count.toString());
                         }
-
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
                         }
                     });
                 }
-
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                 }
             });
         }
-
         else if (user.getEmail().contains("hne")) {
             external.child("Nurse").child(id).child("Doctor ID").addValueEventListener(new ValueEventListener() {
                public void onDataChange(DataSnapshot dataSnapshot) {
@@ -94,13 +83,11 @@ public class NDwaiting extends Fragment {
                                     final Long count = dataSnapshot.getChildrenCount();
                                     numberOfPatient.setText(count.toString());
                                 }
-
                                 @Override
                                 public void onCancelled(DatabaseError databaseError) {
                                 }
                             });
                         }
-
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
                         }
@@ -110,7 +97,6 @@ public class NDwaiting extends Fragment {
                 }
             });
         }
-
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -145,7 +131,6 @@ public class NDwaiting extends Fragment {
             }
 
         });
-
         return p;
     }
 }

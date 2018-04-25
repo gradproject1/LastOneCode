@@ -1,6 +1,4 @@
 package com.example.user1.urnextapp;
-
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -30,10 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-
 public class Pprofile extends Fragment {
-
     private TextView name,arrival,docName,appTime;
     private Button logout,cancel;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -44,14 +39,11 @@ public class Pprofile extends Fragment {
     DatabaseReference waiting = database.getReference("waiting time and queue number");
      String id=" ";
     private FirebaseFirestore fire_store; //to store token id in his document
-
     //Constructor default
     public Pprofile(){};
-
     @Override
     public View onCreateView(  @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) throws NullPointerException {
         View Page1 = inflater.inflate(R.layout.fragment_pprofile, container, false);
-
         name=    (TextView) Page1.findViewById(R.id.patientName);
         arrival = (TextView) Page1.findViewById(R.id.arrivelTime);
         docName =(TextView) Page1.findViewById(R.id.doctorName);
@@ -59,14 +51,10 @@ public class Pprofile extends Fragment {
         logout = (Button) Page1.findViewById(R.id.logout);
         cancel =(Button) Page1.findViewById(R.id.cancel);
         fire_store= FirebaseFirestore.getInstance(); //fire store instance
-
-
         if(user != null)
         {
             id=user.getUid();
-
         }
-
         Patient.child(id).addValueEventListener(new ValueEventListener(){
             public void onDataChange(DataSnapshot dataSnapshot) {
               final String  pname= dataSnapshot.child("Name").getValue(String.class);
@@ -74,15 +62,12 @@ public class Pprofile extends Fragment {
                 final String arrival2 = dataSnapshot.child("arrival").getValue(String.class);
                 arrival.setText(arrival2);
               name.setText(pname);
-
                 external.child("Appointment").child("Dental clinic").child(pphone).addValueEventListener(new ValueEventListener(){
                     public void onDataChange(DataSnapshot dataSnapshot) {
                       final String  dname= dataSnapshot.child("Doctor Name").getValue(String.class);
                       final String papp= dataSnapshot.child("appTime").getValue(String.class);
-
                         docName.setText(dname);
                         appTime.setText(papp);
-
                         cancel.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -99,26 +84,18 @@ public class Pprofile extends Fragment {
                                                 Toast.makeText(getContext(),"You successfully canceled this appointment!", Toast.LENGTH_SHORT).show();
                                                 Intent h= new Intent(getContext(), WelcomePage.class);
                                                 startActivity(h);
-
-
                                             }
 
                                         })
                                         .setNegativeButton("cancel", null)
-                                        .show();
-                         }
-                        });
-
-}
+                                        .show();}});}
                     @Override
                     public void onCancelled(DatabaseError databaseError) {}
                 });
-
              }
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
-
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -153,6 +130,4 @@ public class Pprofile extends Fragment {
             }
 
         });
-        return Page1;
-    }
-}
+        return Page1;}}

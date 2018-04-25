@@ -1,5 +1,4 @@
 package com.example.user1.urnextapp;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -14,20 +13,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-/**
- * Created by Rawan on 03/04/18.
- */
-
 public class entertainmentSignUp extends AppCompatActivity {
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference Patient = database.getReference("Patient");
     private FirebaseAuth firebaseAuth= FirebaseAuth.getInstance();
     private FirebaseUser user = firebaseAuth.getCurrentUser();
-
     String id;
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entertainment_sign_up);
@@ -36,7 +28,6 @@ public class entertainmentSignUp extends AppCompatActivity {
             id = user.getUid();
         }
     }
-
     public void selectItem (View view)
     {
         boolean checked =((CheckBox)view ).isChecked();
@@ -91,11 +82,8 @@ public class entertainmentSignUp extends AppCompatActivity {
                 else
                     Patient.child(id).child("travil").removeValue();
                 break;
-
-
         }
     }
-
     public void f (View view)
     { user.sendEmailVerification();
         Toast.makeText(this, "A verification link has been sent to your email account" , Toast.LENGTH_LONG).show();

@@ -1,5 +1,4 @@
 package com.example.user1.urnextapp;
-
 import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -14,24 +13,13 @@ import com.estimote.coresdk.service.BeaconManager;
 
 import java.util.List;
 import java.util.UUID;
-
-/**
- * Created by Nony on 28/03/18.
- */
-
 public class MyBeacon extends Application {
 static int flag=0;
     private BeaconManager beaconManager;
-
     @Override
     public void onCreate() {
         super.onCreate();
-
         beaconManager = new BeaconManager(getApplicationContext());
-
-
-        /////////////////////////////////////////
-
         // add this below:
         beaconManager.setMonitoringListener(new BeaconManager.BeaconMonitoringListener() {
             @Override
@@ -50,8 +38,6 @@ static int flag=0;
                         "Goodbey!");
             }
         });
-
-        ///////////////////////////////////////
         // add this below:
         beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
             @Override
@@ -62,9 +48,7 @@ static int flag=0;
                         6632, 59107));
             }
         });
-        //////////////////////////////////////////
     }
-
     public void showNotification(String title, String message) {
         Intent notifyIntent = new Intent(this, WelcomePage.class);
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -82,5 +66,4 @@ static int flag=0;
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(1, notification);
     }
-
 }
